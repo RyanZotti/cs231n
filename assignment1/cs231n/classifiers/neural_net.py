@@ -135,7 +135,7 @@ class TwoLayerNet(object):
     dW1 += reg*W1
     grads["W1"] = dW1
 
-    db1 = np.sum(dY1, axis=0)# Hx1
+    db1 = np.sum(dY1, axis=0) # Hx1
     grads["b1"] = db1
 
     #############################################################################

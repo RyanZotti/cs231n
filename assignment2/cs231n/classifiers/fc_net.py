@@ -214,10 +214,14 @@ class FullyConnectedNet(object):
     self.bn_params = []
     if self.use_batchnorm:
       self.bn_params = [{'mode': 'train'} for i in xrange(self.num_layers - 1)]
+      self.params['bn_params'] = self.bn_params
     
     # Cast all parameters to the correct datatype
     for k, v in self.params.iteritems():
-      self.params[k] = v.astype(dtype)
+      try:
+          self.params[k] = v.astype(dtype)
+      except AttributeError:
+          pass
 
 
   def loss(self, X, y=None):
@@ -228,14 +232,16 @@ class FullyConnectedNet(object):
     """
     X = X.astype(self.dtype)
     mode = 'test' if y is None else 'train'
+    
 
     # Set train/test mode for batchnorm params and dropout param since they
     # behave differently during training and testing.
     if self.dropout_param is not None:
       self.dropout_param['mode'] = mode   
     if self.use_batchnorm:
+      self.bn_params = self.params['bn_params']
       for bn_param in self.bn_params:
-        bn_param[mode] = mode
+        bn_param['mode'] = mode
 
     scores = None
     ############################################################################
